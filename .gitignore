@@ -1,0 +1,8 @@
+node_modules/
+data/
+.env
+# paid content stays out of this public repo
+book/content/
+book/out/
+book/node_modules/
+*.pdf

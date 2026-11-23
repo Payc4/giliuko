@@ -10,7 +10,7 @@ mkdirSync('out/img', { recursive: true })
 const b = await chromium.launch()
 
 // 1) illustrations -> transparent PNGs (sharp in print, small PDF)
-const sizes = { wreath: 1400, acornHero: 900, oakSprig: 1100, divider: 900 }
+const sizes = { wreath: 1400, wreathOpen: 1400, acornHero: 900, oakSprig: 1100, divider: 900 }
 for (const [k, f] of Object.entries(art)) {
   const file = `out/img/${k}.png`
   if (existsSync(file) && !process.env.REDRAW) continue
@@ -65,12 +65,12 @@ const pages = []
 const page = (cls, body, { num = true } = {}) => { pageNo++; pages.push(`<section class="page ${cls}"><div class="inner">${body}</div>${num ? `<footer><span>${esc(book.footer)}</span><span class="pn">${pageNo}</span></footer>` : ''}</section>`) }
 
 // cover
-page('cover', `<div class="cover__wreath"><img src="${img('wreath')}" alt="">${photo ? `<img class="cover__photo" src="${photo}" alt="">` : `<img class="cover__acorn" src="${img('acornHero')}" alt="">`}</div>
+page('cover', `<div class="cover__wreath"><img src="${img(photo ? 'wreathOpen' : 'wreath')}" alt="">${photo ? `<img class="cover__photo" src="${photo}" alt="">` : `<img class="cover__acorn" src="${img('acornHero')}" alt="">`}</div>
   <h1>${esc(book.title)}</h1><p class="cover__sub">${esc(book.subtitle)}</p><img class="cover__div" src="${img('divider')}" alt=""><p class="cover__line">${esc(book.coverLine)}</p>`, { num: false })
 // intro letter
 page('letter', `<h2 class="ptitle">${esc(book.introTitle)}</h2><img class="div" src="${img('divider')}" alt="">
   <div class="letter__body">${book.intro.map((p, i) => `<p${i === 0 ? ' class="salute"' : ''}>${esc(p)}</p>`).join('')}<p class="sign">– ${esc(book.signature)}</p></div>
-  ${photo ? `<div class="corner letter__photo"><img src="${img('wreath')}" alt=""><img class="letter__photo-img" src="${photo}" alt=""></div>` : ''}
+  ${photo ? `<div class="corner letter__photo"><img src="${img('wreathOpen')}" alt=""><img class="letter__photo-img" src="${photo}" alt=""></div>` : ''}
   <img class="corner letter__art" src="${img('oakSprig')}" alt="">`)
 // contents (filled after we know recipe pages)
 const contentsIndex = pages.length; page('contents', '')

@@ -88,6 +88,23 @@ function smallLeaf(x, y, s, rot, fill = P.olive) {
 }
 
 // ── finished illustrations ──
+function wreathSvg(full) {
+  return wrap('-165 -165 330 330', (() => {
+    const out = [], R = 122
+    // leaves follow the ring (tangent), alternating a little in/out; small gap at the bottom for acorns and berries
+    for (let i = 0; i < 22; i++) {
+      const deg = 112 + i * 14.6, a = deg * Math.PI / 180
+      const x = Math.cos(a) * R, y = Math.sin(a) * R
+      if (!full && deg % 360 > 25 && deg % 360 < 160) continue
+      const tilt = i % 2 ? 28 : -28
+      out.push(i % 3 === 2 ? smallLeaf(x, y, .95, deg + 180 + tilt, i % 2 ? P.olive : P.sage) : oakLeaf(x, y, .5 + (i % 4) * .04, deg + 180 + tilt, i % 2 ? '#b9c29b' : P.sage))
+    }
+    if (full) out.push(acorn(-34, 112, .62, -28), acorn(-20, 122, .5, 8), acorn(34, 110, .58, 26))
+    if (full) out.push(berry(2, 126, 7, P.rose, P.rose2), berry(13, 120, 6, P.rose, P.rose2), berry(-8, 119, 5.5, P.rose, P.rose2))
+    return out.join('')
+  })())
+}
+
 export const art = {
   acornHero: () => wrap('-60 -60 120 130', `
     ${oakLeaf(-8, 30, .78, -38)}${oakLeaf(10, 32, .7, 32, '#b9c29b')}
@@ -134,19 +151,9 @@ export const art = {
     <path d="M36 58 C34 76 40 94 52 106" stroke="#e7a49a" stroke-width="8" opacity=".55" fill="none" filter="url(#wcSoft)"/>
     ${twig('M65 36 C64 26 66 18 71 12', 2)}${smallLeaf(70, 22, 1, 60)}`),
 
-  wreath: () => wrap('-165 -165 330 330', (() => {
-    const out = [], R = 122
-    // leaves follow the ring (tangent), alternating a little in/out; small gap at the bottom for acorns and berries
-    for (let i = 0; i < 22; i++) {
-      const deg = 112 + i * 14.6, a = deg * Math.PI / 180
-      const x = Math.cos(a) * R, y = Math.sin(a) * R
-      const tilt = i % 2 ? 28 : -28
-      out.push(i % 3 === 2 ? smallLeaf(x, y, .95, deg + 180 + tilt, i % 2 ? P.olive : P.sage) : oakLeaf(x, y, .5 + (i % 4) * .04, deg + 180 + tilt, i % 2 ? '#b9c29b' : P.sage))
-    }
-    out.push(acorn(-34, 112, .62, -28), acorn(-20, 122, .5, 8), acorn(34, 110, .58, 26))
-    out.push(berry(2, 126, 7, P.rose, P.rose2), berry(13, 120, 6, P.rose, P.rose2), berry(-8, 119, 5.5, P.rose, P.rose2))
-    return out.join('')
-  })()),
+  wreath: () => wreathSvg(true),
+  // same ring without acorns, berries or the lowest leaves: sits behind the author's photo, which fades out at the bottom
+  wreathOpen: () => wreathSvg(false),
 
   divider: () => wrap('0 0 260 30', `
     ${twig('M10 15 C60 10 100 20 130 15 C160 10 200 20 250 15', 1.3)}

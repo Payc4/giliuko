@@ -95,7 +95,7 @@ function wreathSvg(full) {
     for (let i = 0; i < 22; i++) {
       const deg = 112 + i * 14.6, a = deg * Math.PI / 180
       const x = Math.cos(a) * R, y = Math.sin(a) * R
-      if (!full && deg % 360 > 25 && deg % 360 < 160) continue
+      if (!full && deg % 360 > 25 && deg % 360 < 150) continue
       const tilt = i % 2 ? 28 : -28
       out.push(i % 3 === 2 ? smallLeaf(x, y, .95, deg + 180 + tilt, i % 2 ? P.olive : P.sage) : oakLeaf(x, y, .5 + (i % 4) * .04, deg + 180 + tilt, i % 2 ? '#b9c29b' : P.sage))
     }

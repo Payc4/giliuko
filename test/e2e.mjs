@@ -82,7 +82,7 @@ try {
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()) })
   await page.goto(BASE + '/')
   assert.match(await page.textContent('h1'), /Giliuko meniu/)
-  assert.match(await page.textContent('#pirkti'), /9,99 €/)
+  assert.match(await page.textContent('#pirkti'), /4,99 €/)
   assert.equal((await page.$$('.recipes li')).length, 24)
   assert.match(await page.textContent('.foot'), /Testinė MB · Įm. k. 123456789/)
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false, 'no sideways scroll on a phone')
@@ -107,12 +107,12 @@ try {
   await Promise.all([page.waitForURL(/\/aciu\?session_id=cs_test_/), page.click('#buyBtn')])
   const call = stripeCalls[0]
   assert.deepEqual([call.mode, call['line_items[0][price_data][currency]'], call['line_items[0][price_data][unit_amount]'], call.locale, call['metadata[product]'], call.allow_promotion_codes],
-    ['payment', 'eur', '999', 'lt', 'giliuko-meniu-lt', 'true'])
+    ['payment', 'eur', '499', 'lt', 'giliuko-meniu-lt', 'true'])
   assert.match(call['metadata[consent]'], /^digital-content-immediate /)
   assert.equal(call.success_url, `${BASE}/aciu?session_id={CHECKOUT_SESSION_ID}`)
   assert.match(await page.textContent('main'), /Mokėjimas gautas/)
   assert.match(await page.textContent('main'), /ruta@example\.com/)
-  step('buy: consent required; Stripe Checkout (payment, 9.99 EUR, LT, promo codes) -> thank-you page')
+  step('buy: consent required; Stripe Checkout (payment, 4.99 EUR, LT, promo codes) -> thank-you page')
 
   // ── download
   const [dl] = await Promise.all([page.waitForEvent('download'), page.click('a.btn--big')])
@@ -144,7 +144,7 @@ try {
   step('no double purchase or email when the page is reloaded and the webhook also arrives')
 
   // ── buyer who closes the tab: only the webhook arrives
-  const lone = { id: 'cs_test_lone' + randomBytes(6).toString('hex'), payment_status: 'paid', status: 'complete', amount_total: 999, currency: 'eur', metadata: { product: 'giliuko-meniu-lt' }, customer_details: { email: 'jonas@example.com', name: 'Jonas' } }
+  const lone = { id: 'cs_test_lone' + randomBytes(6).toString('hex'), payment_status: 'paid', status: 'complete', amount_total: 499, currency: 'eur', metadata: { product: 'giliuko-meniu-lt' }, customer_details: { email: 'jonas@example.com', name: 'Jonas' } }
   assert.equal((await hook({ type: 'checkout.session.completed', data: { object: lone } }, 'whsec_wrong')).status, 400)
   assert.equal((await purchases()).length, 1, 'forged webhook ignored')
   assert.equal((await hook({ type: 'checkout.session.completed', data: { object: lone } })).status, 200)
@@ -180,7 +180,7 @@ try {
   assert.equal((await fetch(BASE + '/admin')).status, 401)
   const adm = await fetch(BASE + '/admin', { headers: { authorization: 'Basic ' + Buffer.from('x:test-pass').toString('base64') } })
   const html = await adm.text()
-  assert.equal(adm.status, 200); assert.match(html, /Pirkimai: 2 · 19\.98 €/); assert.ok(html.includes('ruta@example.com') && html.includes('jonas@example.com'))
+  assert.equal(adm.status, 200); assert.match(html, /Pirkimai: 2 · 9\.98 €/); assert.ok(html.includes('ruta@example.com') && html.includes('jonas@example.com'))
   step('/admin: password, purchases and total')
 
   // ── other pages

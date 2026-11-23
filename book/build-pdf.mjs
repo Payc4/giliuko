@@ -22,6 +22,8 @@ for (const [k, f] of Object.entries(art)) {
   await p.screenshot({ path: file, omitBackground: true }); await p.close()
 }
 const img = k => `data:image/png;base64,${readFileSync(`out/img/${k}.png`).toString('base64')}`
+// the author's photo (background removed, faded at the waist) – private, kept next to the content
+const photo = existsSync(`content/photo.png`) ? `data:image/png;base64,${readFileSync('content/photo.png').toString('base64')}` : null
 
 // 2) fonts
 const fontDir = 'node_modules/@fontsource'
@@ -63,11 +65,12 @@ const pages = []
 const page = (cls, body, { num = true } = {}) => { pageNo++; pages.push(`<section class="page ${cls}"><div class="inner">${body}</div>${num ? `<footer><span>${esc(book.footer)}</span><span class="pn">${pageNo}</span></footer>` : ''}</section>`) }
 
 // cover
-page('cover', `<div class="cover__wreath"><img src="${img('wreath')}" alt=""><img class="cover__acorn" src="${img('acornHero')}" alt=""></div>
+page('cover', `<div class="cover__wreath"><img src="${img('wreath')}" alt="">${photo ? `<img class="cover__photo" src="${photo}" alt="">` : `<img class="cover__acorn" src="${img('acornHero')}" alt="">`}</div>
   <h1>${esc(book.title)}</h1><p class="cover__sub">${esc(book.subtitle)}</p><img class="cover__div" src="${img('divider')}" alt=""><p class="cover__line">${esc(book.coverLine)}</p>`, { num: false })
 // intro letter
 page('letter', `<h2 class="ptitle">${esc(book.introTitle)}</h2><img class="div" src="${img('divider')}" alt="">
   <div class="letter__body">${book.intro.map((p, i) => `<p${i === 0 ? ' class="salute"' : ''}>${esc(p)}</p>`).join('')}<p class="sign">– ${esc(book.signature)}</p></div>
+  ${photo ? `<div class="corner letter__photo"><img src="${img('wreath')}" alt=""><img class="letter__photo-img" src="${photo}" alt=""></div>` : ''}
   <img class="corner letter__art" src="${img('oakSprig')}" alt="">`)
 // contents (filled after we know recipe pages)
 const contentsIndex = pages.length; page('contents', '')
@@ -81,12 +84,20 @@ recipes.forEach((r, i) => {
     ${(r.intro || []).map(p => `<p class="rintro">${esc(p)}</p>`).join('')}`
   startPage[i] = pageNo + 1
   if (r.fillings) {
-    page('recipe', `${head}<div class="cols">${ingredients(r)}${method(r, { withFillings: false })}</div>${fillImg}`)
-    page('recipe cont', `<header class="rh rh--cont"><p class="rnum">${book.labels.recipe} ${i + 1}</p><h2>${esc(r.title)}</h2></header>${fillings(r)}${tip(r.tip)}<img class="fill fill--left fill--berries" src="${img('berries')}" alt="">`)
+    // one page: base recipe, then the three fillings side by side, then the tip
+    page('recipe', `${head}<div class="cols">${ingredients(r)}${method(r, { withFillings: false })}</div>${fillings(r)}${tip(r.tip)}${fillImg}`)
   } else {
     page('recipe', `${head}<div class="cols">${ingredients(r)}${method(r)}</div>${tip(r.tip)}${fillImg}`)
   }
 })
+// safety page
+if (book.safety) {
+  const sf = book.safety
+  page('safety', `<h2 class="ptitle">${esc(sf.title)}</h2><img class="div" src="${img('divider')}" alt="">
+    <ul class="safety__list">${sf.items.map(t => `<li>${icons.acorn}<span>${esc(t)}</span></li>`).join('')}</ul>
+    <p class="safety__note">${esc(sf.note)}</p><p class="safety__src">${sf.sources.split(' · ').map(esc).join('<br>')}</p>
+    <img class="corner safety__art" src="${img('berries')}" alt="">`)
+}
 // outro
 page('outro', `<img class="outro__acorn" src="${img('acornHero')}" alt=""><h2 class="ptitle">${esc(book.outroTitle)}</h2><img class="div" src="${img('divider')}" alt="">${book.outro.map(p => `<p>${esc(p)}</p>`).join('')}<p class="copy">${esc(book.copyright)}</p>`, { num: false })
 // contents body
@@ -114,6 +125,18 @@ p { margin: 0 0 .55em }
 .cover .inner { inset: 14mm 18mm; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-bottom: 8mm }
 .cover__wreath { position: relative; width: 150mm; height: 150mm; margin: 0 0 2mm }
 .cover__wreath img:first-child { width: 100%; height: 100% }
+.cover__photo { position: absolute; left: 50%; top: 9%; width: 78%; transform: translateX(-50%); z-index: 1 }
+.letter__photo { position: absolute; left: -2mm; bottom: -4mm; width: 86mm; height: 86mm }
+.letter__photo > img:first-child { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .9 }
+.letter__photo-img { position: absolute; left: 50%; top: 8%; width: 80%; transform: translateX(-50%) }
+.safety .inner { padding: 0 6mm }
+.safety__list { list-style: none; padding: 0; margin: 2mm auto 0; max-width: 150mm }
+.safety__list li { display: flex; gap: 3.5mm; align-items: flex-start; padding: 3.2mm 0; border-bottom: .3mm dotted rgba(74,59,47,.2); font-size: 11.4pt; line-height: 1.55 }
+.safety__list li:last-child { border-bottom: 0 }
+.safety__list .ico { width: 5.2mm; height: 5.2mm; margin-top: .6mm }
+.safety__note { max-width: 150mm; margin: 7mm auto 0; padding: 5mm 6mm; border-radius: 3mm; background: rgba(167,178,138,.2); border-left: 1.4mm solid ${C.sage}; font: italic 600 14pt Cormorant; color: ${C.moss}; line-height: 1.35 }
+.safety__src { position: absolute; left: 6mm; right: 6mm; bottom: 0; text-align: center; font-size: 7.6pt; line-height: 1.6; color: ${C.ink2}; letter-spacing: .01em }
+.safety__art { position: absolute; right: -10mm; top: -8mm; width: 40mm }
 .cover__acorn { position: absolute; left: 50%; top: 50%; width: 72mm; transform: translate(-50%, -54%) }
 .cover h1 { font-size: 64pt; line-height: 1; margin-top: 2mm; letter-spacing: .01em }
 .cover__sub { font: italic 500 17pt Cormorant; color: ${C.ink2}; margin: 3mm 0 0 }

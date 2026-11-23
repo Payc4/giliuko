@@ -14,7 +14,7 @@ const env = process.env
 const PORT = Number(env.PORT || 3000)
 const DATA_DIR = env.DATA_DIR || join(ROOT, 'data')
 const BASE_URL = (env.BASE_URL || `http://localhost:${PORT}`).replace(/\/$/, '')
-const PRICE_CENTS = Number(env.PRICE_CENTS || 999)
+const PRICE_CENTS = Number(env.PRICE_CENTS || 499)
 // The PDF is not in the (public) repo: it's uploaded once on /admin and kept on the persistent volume.
 const PRODUCT = { key: 'giliuko-meniu-lt', name: 'Giliuko meniu – receptų knygelė (PDF)', file: join(DATA_DIR, 'products', 'giliuko-meniu-lt.pdf'), download: 'Giliuko-meniu.pdf' }
 const productInfo = () => stat(PRODUCT.file).catch(() => null)

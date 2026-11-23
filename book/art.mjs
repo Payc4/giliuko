@@ -50,15 +50,29 @@ function oakLeaf(x, y, s, rot, fill = P.sage, vein = P.moss) {
   </g>`
 }
 function acorn(x, y, s, rot = 0, face = false) {
+  // nut: golden, egg-shaped with a small pointed tip; cap: scaly dome with a rim and a stem
+  const scales = []
+  for (let r = 0; r < 4; r++) {
+    const yy = -8 + r * 4.2, half = 13 + r * 2.4, n = 5 + r
+    for (let i = 0; i < n; i++) {
+      const xx = -half + (i + .5) * (2 * half / n) + (r % 2 ? 1.2 : -1.2)
+      scales.push(`<path d="M${(xx - 2.6).toFixed(1)} ${yy.toFixed(1)} q2.6 3.4 5.2 0" />`)
+    }
+  }
   return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})">
-    <ellipse cx="0" cy="22" rx="17" ry="22" fill="${P.acorn}" filter="url(#wc)"/>
-    <ellipse cx="-6" cy="16" rx="5" ry="9" fill="#d9a777" opacity=".55" filter="url(#wcSoft)"/>
-    <path d="M-19 6 C-19 -6 -10 -12 0 -12 C10 -12 19 -6 19 6 C12 9 -12 9 -19 6 Z" fill="${P.cap}" filter="url(#wc)"/>
-    <path d="M-15 1 L15 1 M-17 -3 L13 5 M-12 -8 L17 0 M-17 4 L-4 -10 M-6 6 L8 -11 M4 6 L16 -4" stroke="${P.acornDark}" stroke-width="1" opacity=".5" fill="none" filter="url(#ink)"/>
-    <path d="M0 -12 C1 -17 3 -20 6 -22" stroke="${P.acornDark}" stroke-width="2.4" stroke-linecap="round" fill="none" filter="url(#ink)"/>
-    ${face ? `<circle cx="-6" cy="22" r="1.8" fill="${P.ink}"/><circle cx="6" cy="22" r="1.8" fill="${P.ink}"/>
-      <path d="M-3.5 28 Q0 31 3.5 28" stroke="${P.ink}" stroke-width="1.3" fill="none" stroke-linecap="round"/>
-      <ellipse cx="-10" cy="27" rx="3" ry="2" fill="${P.rose}" opacity=".55"/><ellipse cx="10" cy="27" rx="3" ry="2" fill="${P.rose}" opacity=".55"/>` : ''}
+    <path d="M-16.5 8 C-17.5 23 -11 37 -1.6 44.5 Q0 47.5 1.6 44.5 C11 37 17.5 23 16.5 8 Z" fill="#c9965a" filter="url(#wc)"/>
+    <path d="M9 14 C11 24 8 33 2 40" stroke="#9a6a3a" stroke-width="3.2" opacity=".45" fill="none" stroke-linecap="round" filter="url(#wcSoft)"/>
+    <path d="M-9 14 C-10.5 22 -8.5 29 -5 34" stroke="#f2d3a2" stroke-width="4.5" opacity=".75" fill="none" stroke-linecap="round" filter="url(#wcSoft)"/>
+    <path d="M-1.2 45.5 L0 49 L1.2 45.5" fill="#7a4f2e" opacity=".8"/>
+    <path d="M-22 10.5 C-23 -3 -12.5 -12 0 -12 C12.5 -12 23 -3 22 10.5 C14 13.5 -14 13.5 -22 10.5 Z" fill="#9b7448" filter="url(#wc)"/>
+    <g fill="none" stroke="#6b4b2c" stroke-width="1" opacity=".6" filter="url(#ink)">${scales.join('')}</g>
+    <path d="M-22 10.5 C-14 14 14 14 22 10.5" stroke="#5f4126" stroke-width="1.6" fill="none" opacity=".55" filter="url(#ink)"/>
+    <path d="M-14 -4 C-9 -9 -3 -10.5 3 -10.5" stroke="#c8a275" stroke-width="2.6" opacity=".55" fill="none" stroke-linecap="round" filter="url(#wcSoft)"/>
+    <path d="M0.5 -12 C1 -16.5 3.2 -19.5 6.6 -21" stroke="#5f4126" stroke-width="2.6" stroke-linecap="round" fill="none" filter="url(#ink)"/>
+    ${face ? `<ellipse cx="-6" cy="25" rx="1.9" ry="2.3" fill="${P.ink}"/><ellipse cx="6" cy="25" rx="1.9" ry="2.3" fill="${P.ink}"/>
+      <circle cx="-5.4" cy="24.2" r=".6" fill="#fff" opacity=".9"/><circle cx="6.6" cy="24.2" r=".6" fill="#fff" opacity=".9"/>
+      <path d="M-3.4 30.5 Q0 33.4 3.4 30.5" stroke="${P.ink}" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="-10.5" cy="30" rx="3" ry="1.9" fill="${P.rose}" opacity=".55"/><ellipse cx="10.5" cy="30" rx="3" ry="1.9" fill="${P.rose}" opacity=".55"/>` : ''}
   </g>`
 }
 function twig(d, w = 2.2) {
@@ -153,5 +167,5 @@ export const icons = {
   nobake: L('<path d="M3 13 C3 7 7 3 13 3 C13 9 9 13 3 13 Z M3 13 L9.5 6.5"/>'),
   party: L('<path d="M2.5 14 H13.5 M3.5 14 V9.5 H12.5 V14 M3.5 11.6 C5 12.6 6.5 10.6 8 11.6 C9.5 12.6 11 10.6 12.5 11.6 M8 9.5 V6.6"/><path d="M8 3 C7.2 4 7.2 5 8 5.6 C8.8 5 8.8 4 8 3 Z"/>'),
   portions: L('<path d="M2 8 H14 C14 11.3 11.3 14 8 14 C4.7 14 2 11.3 2 8 Z M5.5 5.8 C5 4.8 6 4 5.5 3 M8 5.8 C7.5 4.8 8.5 4 8 3 M10.5 5.8 C10 4.8 11 4 10.5 3"/>'),
-  acorn: `<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><ellipse cx="8" cy="10" rx="4" ry="5" fill="${P.acorn}"/><path d="M3.4 7.6 C3.4 5 5.4 3.6 8 3.6 C10.6 3.6 12.6 5 12.6 7.6 C10.8 8.4 5.2 8.4 3.4 7.6 Z" fill="${P.cap}"/><path d="M8 3.6 C8.3 2.6 9 2 9.8 1.6" stroke="${P.acornDark}" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg>`,
+  acorn: `<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.4 7.4 C4.2 10.6 6 13.4 7.6 14.6 Q8 15.2 8.4 14.6 C10 13.4 11.8 10.6 11.6 7.4 Z" fill="#c9965a"/><path d="M3 7.8 C2.8 4.6 5.2 3.2 8 3.2 C10.8 3.2 13.2 4.6 13 7.8 C10.8 8.6 5.2 8.6 3 7.8 Z" fill="#9b7448"/><path d="M4.6 5.6 q.9 1 1.8 0 M7.1 5.4 q.9 1 1.8 0 M9.6 5.6 q.9 1 1.8 0" stroke="#6b4b2c" stroke-width=".7" fill="none"/><path d="M8.2 3.2 C8.4 2.2 9 1.6 9.8 1.3" stroke="#5f4126" stroke-width="1.1" stroke-linecap="round" fill="none"/></svg>`,
 }

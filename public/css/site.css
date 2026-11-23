@@ -95,7 +95,9 @@ p { margin: 0 0 .8em }
 .letter h2 { font-style: italic; margin-bottom: 20px }
 .letter p { font: 500 21px/1.55 var(--serif); color: var(--ink) }
 .letter__sign { font-style: italic; color: var(--olive) !important; margin-top: 18px }
-.letter__art { width: 230px; margin: 0 auto 10px }
+.letter__photo { position: relative; width: min(340px, 82vw); aspect-ratio: 1; margin: 0 auto 18px }
+.letter__wreath { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .9 }
+.letter__family { position: absolute; left: 50%; top: 8%; width: 80%; transform: translateX(-50%) }
 
 /* buy */
 .buy { max-width: 920px }

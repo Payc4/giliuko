@@ -1,6 +1,6 @@
 # Giliuko meniu – shop
 
-One-page shop for the **Giliuko meniu** PDF (24 family recipes, Lithuanian): landing page → Stripe Checkout (one-time, 9.99 EUR) → download page + email with a personal link.
+One-page shop for the **Giliuko meniu** PDF (24 family recipes, Lithuanian): landing page → Stripe Checkout (one-time, 4.99 EUR) → download page + email with a personal link.
 
 - `server.js`: landing page, `POST /api/checkout`, Stripe webhook, thank-you page `/aciu`, downloads `/parsisiusti/<token>`, "resend my link", `/admin`
 - `lib/stripe.js`: Stripe over plain REST (no SDK) + webhook signature check
@@ -43,7 +43,7 @@ To rebuild the PDF after editing recipes: put the content file at `book/content/
 | `BASE_URL` | `https://giliukomeniu.lt` | Used in Stripe return links and emails |
 | `STRIPE_SECRET_KEY` | `sk_live_…` | Secret – Coolify only |
 | `STRIPE_WEBHOOK_SECRET` | `whsec_…` | Secret – Coolify only |
-| `PRICE_CENTS` | `999` | Price shown and charged (default 999) |
+| `PRICE_CENTS` | `499` | Price shown and charged (default 499 = 4.99 EUR) |
 | `STRIPE_PRICE_ID` | `price_…` | Optional: use a Stripe Price instead of `PRICE_CENTS` |
 | `STRIPE_INVOICES` | `true` | Optional: Stripe creates an invoice PDF per purchase (Stripe charges a small fee) |
 | `ADMIN_PASSWORD` | long random | `/admin` (any username) |
